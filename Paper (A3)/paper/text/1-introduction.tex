@@ -1,0 +1,73 @@
+\section{Introduction}
+\label{sec:introduction}
+
+	% Context: Lightweight Manycore Processors
+	Lightweight manycore processors emerged to address demands on
+	high-performance and energy efficiency~\cite{Francesquini2015}.
+	On the one hand, to deliver high-performance and scalability, these
+	processors rely on a distributed memory architecture and a rich
+	\noc.  On the other hand, to achieve energy
+	efficiency, they are built with simple low-power \mimd
+	cores and \spms  with no hardware coherency
+	support.  Moreover, they exploit heterogeneity
+	by combining cores with different capabilities.
+	Some industry-successful examples of \lws are the
+	\mppa~\cite{DeDinechin2013-2} and the \epiphany~\cite{Olofsson2016}.
+
+	% Motivation #1: Architectural Challenges
+	However, while the aforementioned architectural features make lightweight
+	manycores so interesting, they also introduce several challenges
+	in software programmability.  For instance, the \textit{distributed
+	memory architecture} requires a non-trivial software design where the
+	data should be explicitly fetched from remote memories to local
+	ones to be manipulated~\cite{Francesquini2015}.  Furthermore, the
+	\textit{small amount of on-chip memory} demands software to
+	explicitly tile the working data set into chunks and locally
+	manipulate them one at a time~\cite{Souza2017}.
+	Finally, the rich \noc exposes mechanisms for asynchronous programming
+	to overlap communication with
+	computation~\cite{Hascoet2017}; and hand-operated routing to
+	guarantee uniform communication latencies.
+
+	% Motivation #2: Software Development Support
+	Currently, two approaches are employed to address programmability
+	challenges in \lws: \oses~\cite{Kluge2014,
+	Asmussen2016, Penna2019-3} and baremetal
+	\runtimesys~\cite{Dinechin2013-1, Varghese2014, Richie2017}. The
+	former is meant to bridge critical programmability gaps imposed by hardware
+	intricacies.  The latter aims to expose a rich, performance-oriented
+	programming environment, narrowed to the underlying architecture.
+	While these two approaches are effective for some use cases, they
+	have a significant duality drawback. Application development directly
+	on top of \os interfaces yields to software portability, but the actual
+	programming interface provided is
+	complex and delay the software development process.  In contrast,
+	baremetal and vendor-specific \runtimesys expose richer interfaces
+	that accelerate the development process, but they exclusively concern to
+	the software stack ecosystem of a specific lightweight manycore, resulting
+	in non-portable applications.
+
+	% The Paragraph: Problem, Hypothesis, Goals and Contributions
+	In this work, we present a third proposition, trying to address the programmability and
+	portability challenges of \lws, by combining both approaches: a lightweight
+	implementation of the \mpi standard (named \lwmpi) on top of \nanvix,
+	a \posix-compliant distributed \os that targets \lws~\cite{Penna2019-3}.
+	%
+	% Evaluation Methodology
+	To assess \lwmpi with representative
+	computing workloads, we carried out experiments with three applications extracted
+	from the CAP Bench suite~\cite{Souza2017}. All experiments were executed on the
+	\mppa, a baremetal lightweight manycore. Our results unveiled that \lwmpi delivers
+	similar performance scalability when compared
+	with a vendor-specific low-level \api for the \mppa, while exposing a richer
+	programming interface.
+
+	% Work Structure
+	The remainder of this work is organized as follows.
+	In Section~\ref{sec:related-work} we discuss related works. In
+	Section~\ref{sec:proposal}, we present an architectural overview of \lwmpi.
+	In Section~\ref{sec:evaluation-methodology}, we
+	detail our evaluation methodology and present the \mppa. In
+	Section~\ref{sec:experimental-results},
+	we discuss the experimental results. Finally, in
+	Section~\ref{sec:conclusions}, we draw our conclusions.

@@ -1,0 +1,78 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+
+\linespread{0.92}
+
+% Encoding and Language
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% Spacing
+\usepackage{xspace}
+
+% Images
+\usepackage{graphicx}
+\usepackage{subcaption}
+\graphicspath{{./img/}}
+\DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{multirow}
+
+% Enumerations
+\usepackage[inline]{enumitem}
+\renewcommand*\descriptionlabel[1]{\hspace\labelsep\itshape #1}
+
+% Units
+\usepackage{amssymb}
+\usepackage{siunitx}
+\DeclareSIUnit{\nothing}{\relax}
+
+% URLs
+\usepackage{url}
+
+% Hyper References
+\usepackage[hidelinks=true]{hyperref}
+\usepackage{nameref}
+
+% Acronyms
+\usepackage[acronym,nowarn]{glossaries}
+\glsdisablehyper
+\input{acronyms.tex}
+\makeglossaries
+
+\sloppy
+
+\begin{document}
+
+\author{\IEEEauthorblockN{João Fellipe Uller}
+\IEEEauthorblockA{\textit{Universidade Federal de Santa Catarina (UFSC)}\\
+Florianópolis, Brazil \\
+joao.f.uller@grad.ufsc.br}
+}
+
+\title{A performance evaluation using an MPI library over the communication infrastructure of Nanvix}
+
+\author{\IEEEauthorblockN{João Fellipe Uller}
+\IEEEauthorblockA{\textit{Universidade Federal de Santa Catarina (UFSC)}\\
+Florianópolis, Brazil \\
+joao.f.uller@grad.ufsc.br}
+}
+
+\maketitle
+
+\input{text/0-abstract.tex}               % 0.5 p
+\input{text/1-introduction.tex}           % 1.5 p
+\input{text/6-related-work.tex}           % 1.0 p
+\input{text/3-proposal.tex}               % 2.0 p
+\input{text/4-evaluation-methodology.tex} % 1.0 p
+\input{text/5-experimental-results.tex}   % 2.0 p
+\input{text/7-conclusions.tex}            % 0.5 p
+\input{text/98-acknowledgements.tex}      % 0.5 p
+
+\bibliographystyle{IEEEtran}
+\bibliography{references.bib}
+
+\end{document}

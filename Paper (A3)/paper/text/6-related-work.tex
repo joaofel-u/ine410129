@@ -1,0 +1,53 @@
+\section{Related Work}
+\label{sec:related-work}
+
+	Software development for lightweight manycores is challenging
+	because it strives in finding the balance between performance and
+	programmability. In this context and specifically concerning
+	communication, there are two approaches currently employed:
+	%
+	\begin{enumerate*}[label=(\roman*)]
+		\item vendor-specific communication libraries, which expose a
+			performance-oriented interface for the underlying
+			architecture; and 
+
+		\item industry-standard communication libraries, which provide a
+			richer communication interface, in exchange for some
+			performance penalty.
+	\end{enumerate*}
+
+	Vendor-specific solutions mostly rely on specific features of the
+	underlying hardware to deliver performance. For instance,
+	synchronous~\cite{Wijngaart2011} and asynchronous~\cite{Clauss2011}
+	interfaces are provided on top of \mpb for the \scc. The \mppa features
+	both a communication library that shares some similarity
+	with \posix~\cite{Dinechin2013-1} and a specific interface for one-sided
+	communications~\cite{Hascoet2017}.
+	Finally, a specific communication \api is provided for the \epiphany
+	processor~\cite{Varghese2014}.
+
+	In contrast, standard communication interfaces benefit from
+	extensive improvements and optimizations, being a solid choice
+	for programming lightweight manycores. However, to the best of our
+	knowledge, all standard communication interfaces ports are built on
+	top of low-level primitives and libraries provided by the vendors,
+	making it difficult to adapt them to other
+	manycore processors. Examples of such solutions are those based on
+	the \pgas programming model, such as the \upc port for the
+	\scc~\cite{Gamell2012} and the \openshmem implementation~\cite{Ross2016}
+	for the \epiphany processor.  Moreover, there have been some efforts on
+	providing an \mpi port for \mppa~\cite{Quan2015} and
+	\epiphany~\cite{Richie2017}. The former is the closest work to the
+	present one, also presenting an implementation from scratch to cope
+	with the restrictions of lightweight manycores. The main difference,
+	however, is the fact that it is implemented on top of a
+	vendor-specific \ipc library, and so, being not portable to other
+	processors/architectures. The latter, in addition, does not conform
+	with the \mpi standard.
+
+	Overall, both approaches lack in application
+	portability. This work takes a step further on providing a
+	flexible and extendable implementation of a well-known parallel
+	programming standard (\mpi) on top of an open-source \os for
+	lightweight manycores (\nanvix), offering a standard high
+	performance solution applyable to a broad range of \lws.
