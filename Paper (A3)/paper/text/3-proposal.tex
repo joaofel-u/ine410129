@@ -24,7 +24,7 @@
 			effort; as so, we design it in a tier-based scheme; and
 
 		\item \textit{lightness}: the implementation should be simple and
-			lightweight to cope with restrictive resources of \lws; this way,
+			lightweight to cope with restrictive resources of \lws; for that,
 			we implemented it from scratch, rather than adapting an existing
 			heavy-weight solution like
 			% OpenMPI~\cite{OpenMPI2020} or
@@ -112,14 +112,14 @@
 	% Send and recv start (steps 1.1 and 2.1)
 	Initially, when a \mpisend call is issued, the
 	sender builds a request and transfers it to the target process
-	through \mailbox, waiting for the receiver to establish the communication.
+	using \mailbox, waiting for the receiver to establish the communication.
 	The transferred header includes all the information needed by the receiver
-	to match a correspondent \mpirecv with the registered request, \ie
+	to match a correspondent \mpirecv with the created request, \ie
 	communicator id, tag and source/destination.
 	%
-	At the receiver side, when a \mpirecv call is issued, it looks for
-	incoming requests that arrived or blocks waiting for a matching
-	one, if none has been found.
+	At the receiver side, when a \mpirecv call is issued, it looks for a
+	matching request that previously arrived or blocks until a matching
+	one incomes, if none has been found.
 
 	When a matching request is found, the receiver emits an allow signal
 	to the output \portal of the sender, unblocking it and giving permission
@@ -127,7 +127,7 @@
 	using the high bandwidth channel. When the receiver starts to receive the
 	data in its input \portal, it issues a second started-to-receive signal
 	to the sender, signaling that the sender can successfully return when it
-	transmitted all the data through the channel, or if it has already done that.
+	transmitted all the data through the channel.
 	%
 	The receiver will return from \mpirecv when it has
 	read all the data from the channel, or have read the amount of data
