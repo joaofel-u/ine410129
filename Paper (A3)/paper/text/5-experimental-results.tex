@@ -1,30 +1,11 @@
 \section{Experimental Results}
 \label{sec:experimental-results}
-	
-	% FN Graphic
-	\begin{figure}[t]
-		\centering
-		\includegraphics[width=.7\linewidth]{fn-speedup}
-		\caption{FN Kernel}
-		\label{figure:fn}
-		\vspace{-15pt}
-	\end{figure}
 
 	\begin{figure}[b]
 		\centering
-		\vspace{-15pt}
-		\includegraphics[width=.7\linewidth]{gf-speedup}
-		\caption{GF Kernel}
-		\label{figure:gf}
-	\end{figure}
-
-	% KM Graphic
-	\begin{figure}[t]
-		\centering
-		\includegraphics[width=.7\linewidth]{km-speedup}
-		\caption{KM Kernel}
-		\label{figure:km}
-		\vspace{-15pt}
+		\includegraphics[width=.65\linewidth]{fn-speedup}
+		\caption{FN Kernel}
+		\label{figure:fn}
 	\end{figure}
 
 	% FN
@@ -33,12 +14,10 @@
 	%
 	% Plot Analysis
 	Since FN is CPU-bound, communication has little interference and
-	the results show a similar behavior in both solutions:
-	an increase in speedup up to 8 workers and scalability issues, thereafter,
-	being the only exception with 14 workers.
+	the results show a similar behavior in both solutions.
 	%
 	% Additional discussion
-	This behavior is due to the problem design itself and the input workload.
+	The observed behavior is due to the problem design itself and the input workload.
 	The leader process performs an integer division to compute the minimum amount
 	of work to be sent to each worker. Then, the reminder is added to the last worker,
 	which may result in load imbalance. This imbalance is very small up to 8 workers,
@@ -48,6 +27,24 @@
 	In general, the results show that \lwmpi scaled well and was able to provide an
 	easy adaptation of the kernel without introducing an overhead as the parallelism is
 	increased.
+
+	% GF Graphic
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=.65\linewidth]{gf-speedup}
+		\caption{GF Kernel}
+		\label{figure:gf}
+		\vspace{-10pt}
+	\end{figure}
+
+	% KM Graphic
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=.65\linewidth]{km-speedup}
+		\caption{KM Kernel}
+		\label{figure:km}
+		\vspace{-15pt}
+	\end{figure}
 
 	% GF 
 	% Plot Overview
@@ -96,12 +93,3 @@
 	Even so, both solutions had similar linear behaviors, showing that
 	\lwmpi was able to keep up with the speedup scalability presented by
 	the Kalray runtime.
-
-	% Overview
-	In general, \lwmpi delivered a lightweight and richer programming
-	interface, presenting good scalability for parallel and
-	distributed problems.
-	%
-	% Real contribution
-	Consequently, we improve programmability and deliver implicit
-	portability for lightweight manycores, which are our main contributions.

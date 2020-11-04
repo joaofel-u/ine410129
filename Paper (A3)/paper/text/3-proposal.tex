@@ -1,26 +1,14 @@
 \section{LWMPI: Lightweight MPI for Manycores}
 \label{sec:proposal}
 
-	% Research Goal
+	% Present LWMPI
 	Aiming at better programmability in lightweight manycores,
 	we propose \lwmpi\footnote{\lwmpi is available at:
 	\url{https://github.com/nanvix/libmpi}}: an \mpi library for these
-	processors. In contrast to alternative solutions, we made \lwmpi portable
-	across different architectures by relying it on top of a \posix-compliant
-	distributed \os for lightweight manycores.
-
-	% Recall the Necessity of better development environment for LWs
-	These processors bring several challenges to software development, thereby
-	making easy-to-use interfaces an important requirement.
-	%
-	% Recall the restritive caracteristics of LWs
-	These challenges are not restricted to user-level
-	programming, but also to basic software development. Thus, solutions
-	must meet users demands while dealing with
-	strict architectural constraints, especially memory issues.
+	processors.
 	%
 	% Aims (portability, programmability, cope with restritions)
-	Hence, the main design goals of \lwmpi are:
+	The design goals that guided the implementation of \lwmpi are:
 	%
 	\begin{enumerate}[label=(\roman*)]
 		\item \textit{portability}: the library should be portable and
@@ -49,23 +37,23 @@
 \subsection{\lwmpi Architecture}
 \label{sec:libmpi-impl}
 
+	% Justifying partial support
+	Currently, \lwmpi implements an initial subset of the \mpi
+	specification (version 3.1). We opted for this partial support since
+	fully implementing the entire standard would result in a much bigger
+	memory footprint, violating the \textit{lightness} design goal.
+	%
+	% LWMPI architectural overview
+	Figure~\ref{figure:libmpi-arch} presents the two-tier approach
+	adopted by \lwmpi on top of \nanvix.
+
 	\begin{figure}[t]
 		\centering
 		\includegraphics[width=0.9\linewidth]{libmpi}
 		\caption{Architectural overview of \lwmpi.}
 		\label{figure:libmpi-arch}
-		\vspace{-10pt}
+		\vspace{-15pt}
 	\end{figure}
-
-	% Justifying partial support
-	Currently, \lwmpi implements an initial subset of the \mpi
-	specification (version 3.1). We opted for this partial support since
-	fully implementing the entire standard would result in a much bigger
-	memory footprint, violating our fourth design goal (\textit{lightness}).
-	%
-	% LWMPI architectural overview
-	Figure~\ref{figure:libmpi-arch} presents the two-tier approach
-	adopted by \lwmpi on top of \nanvix.
 
 	The \libmpi tier encapsulates the top-level library and is the
 	entry point for user applications.
@@ -107,12 +95,11 @@
 \subsection{Point-to-Point Communication in \lwmpi}
 \label{sec:lwbmpi-sendrecv}
 
-	\begin{figure}[t]
+	\begin{figure}[b]
 		\centering
-		\includegraphics[width=0.6\linewidth]{send-recv_protocol}
+		\includegraphics[width=0.55\linewidth]{send-recv_protocol}
 		\caption{Communication protocol.}
 		\label{figure:comm-protocol}
-		\vspace{-10pt}
 	\end{figure}
 
 	% Present figures
@@ -144,4 +131,4 @@
 	%
 	The receiver will return from \mpirecv when it has
 	read all the data from the channel, or have read the amount of data
-	equivalent to the local user buffer size. 
+	equivalent to the local user buffer size.

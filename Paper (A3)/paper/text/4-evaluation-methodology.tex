@@ -35,23 +35,19 @@
 			intensity.
 	\end{description}
 
-	% Purpose of the kernels' selection 
 	We implemented these applications with \mpi\footnote{Publicly
 	available at: \url{https://github.com/nanvix/benchmarks}.} and
 	contrasted them with the original implementation of the benchmark for
 	\mppa. Noteworthy, \textit{a direct performance comparison between these two
 	solutions is unfair}, since the original implementation relies on
-	a vendor-specific runtime system that is narrowed for
-	\mppa but does not provide any means of software portability across
+	a vendor-specific runtime system, narrowed for
+	\mppa, and does not provide any means of software portability across
 	architectures.
-
-	% Kernels parameters
-	Applications in CAP Bench have a single \textit{leader} process that
-	coordinates the execution, and may have several \textit{workers}
-	that perform the computations.
 	%
+	% Kernels parameters
 	Overall, we carried out strong scaling experiments, where we varied
-	the number of workers from 1 to 15 and we fixed the problem sizes
+	the number of workers from 1 to 15, plus a \textit{leader} process that
+	coordinates the execution, and we fixed the problem sizes
 	of applications as follows:
 	%
 	\begin{enumerate*}[label=(\roman*)]
@@ -97,5 +93,5 @@
 		\includegraphics[width=.8\linewidth]{mppa256}
 		\caption{\mppa architectural overview.}
 		\label{figure:lightweight-manycore}
-		\vspace{-10pt}
+		\vspace{-15pt}
 	\end{figure}
