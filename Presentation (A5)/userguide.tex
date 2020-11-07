@@ -1,0 +1,360 @@
+% Ao menos uma linguagem (brazil ou english) deveria sempre ser fornecida
+\documentclass[english,aspectratio=169]{lapesd-slides}
+
+\usepackage[stable]{footmisc}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{todonotes}
+\usepackage{babel}
+\usepackage[acronym]{glossaries}
+\usepackage{abntex2cite}
+\usepackage[useregional]{datetime2}
+
+\graphicspath{{imgs/}}
+\DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+
+\newcommand{\mydate}{\DTMdisplaydate{2020}{11}{10}{-1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Metadados
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title[Performance evaluation using LWMPI on Nanvix]{A performance evaluation using an MPI library over the communication infrastructure of Nanvix}
+
+\author[Uller, J. F.]{\large João Fellipe Uller \\
+{\vspace{1em} \fontsize{9}{11}
+\texttt{joao.f.uller@grad.ufsc.br}}}
+
+\institute{
+  \fontsize{8}{10}\selectfont 
+  Universidade Federal de Santa Catarina (UFSC) – Brazil\\
+  Departamento de Informática e Estatística (INE) \\
+  \vspace{1em}
+  INE410129-41000025DO/ME (20201) - Computação Paralela\\
+  Prof. Dr. Márcio Bastos Castro
+}
+
+\date{\mydate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slides
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+  % Title
+  \titleframe
+
+  % Insere slides de pausa a cada \section
+  \showsections
+
+  \section{Introduction}
+
+    \subsection{Context}
+      \begin{frame}{Context}
+        \begin{itemize}
+          \item Computational power vs energy consumption
+          \item Lightweight manycores emerged to address high performance and
+            energy efficiency demands~\cite{Francesquini2015}
+        \end{itemize}
+      \end{frame}
+
+    \subsection{Lightweight Manycores}
+      \begin{frame}{Characteristics}
+        \begin{itemize}
+          \item Hundreds or thousands of low-power cores on a single chip
+          \item Heterogeneous environment
+          \item Distributed memory system with small local memories
+          \item Communication through message passing on a rich Network-on-Chip (NoC)
+        \end{itemize}
+
+        \addfig[\small MPPA-256 Architecture][width=0.45\linewidth]{mppa256.pdf}     
+      \end{frame}
+
+      %
+      \begin{frame}{Software Development Challenges}
+        \begin{itemize}
+          \item Data fetching
+          \item Data tiling
+          \item Asynchronous communications~\cite{Hascoet2017}
+          \item Hand-operated routing
+        \end{itemize}
+      \end{frame}
+
+      %
+      \begin{frame}{Programming Environments}
+        \textbf{Approaches to address programmability in lightweight manycores:}
+        \vspace{0.2cm}
+        \begin{itemize}
+          \item \textbf{Operating Systems}
+          \begin{itemize}
+            \item \textbf{Pros}: Bridges hardware intricacies and programmability gaps, providing
+              \textbf{portability}
+            \item \textbf{Cons:} Provided interface may be complex, retarding
+              software development
+          \end{itemize}
+
+          \item \textbf{Baremetal Runtime Systems}
+          \begin{itemize}
+            \item \textbf{Pros}: Expose rich and performance-oriented interfaces narrowed to the
+              underlying architecture
+            \item \textbf{Cons:} Mostly vendor-specific, resulting in
+              non-portable software
+          \end{itemize}
+        \end{itemize}
+
+        \bigskip
+        \textbf{Duality: fast development process OR better software portability?}
+      \end{frame}
+
+    \subsection{MPI}
+      \begin{frame}{Message Passing Interface}
+        \begin{itemize}
+          \item A \textbf{portable} message passing standard
+          \item Maintained and defined by the \textbf{MPI-Forum}\footnote[frame]{\scriptsize MPI-Forum website: https://www.mpi-forum.org }
+          \item Widespread between \textbf{industry} and \textbf{academia}
+          \item Employed in \textbf{supercomputers}
+          \bigskip
+          \item \textbf{De facto standard for message passing in HPC!}
+        \end{itemize}
+      \end{frame}
+
+    \subsection{Goal}
+      \begin{frame}{Goal}
+        %\begin{center}
+          Provide a \textbf{light} \textbf{MPI-compliant library}, designed to cope with \textbf{architectural intricacies}
+          of \textbf{lightweight manycores}, that is \textbf{portable} across multiple architectures and \textbf{easily extensible}.
+        %\end{center}
+      \end{frame}
+
+
+  \section{LWMPI}
+
+    \subsection{Overview}
+      \begin{frame}{Overview}
+	\textbf{LWMPI}: \textbf{L}ight\textbf{w}eight \textbf{M}essage \textbf{P}assing \textbf{I}nterface
+        \begin{itemize}
+          \item Compatible with 3.1 MPI specification (2015)
+          \item Designed \textbf{from scratch} to be \textbf{light}
+          \item Copes with \textbf{architectural intricacies} of lightweight manycores
+          \item Implemented on top of a \textbf{POSIX-compliant distributed OS} (Nanvix\footnote[frame]{\scriptsize http://www.github.com/nanvix}) to enable \textbf{portability} across different lightweight manycore architectures~\cite{Penna2019-3}
+        \end{itemize}
+      \end{frame}
+
+      %
+      \begin{frame}{Actual Support}
+       \textbf{LWMPI currently supports the following MPI features:}
+
+        \begin{itemize}
+          \item \textit{Runtime Management} (\texttt{MPI\_Init} / \texttt{MPI\_Finalize})
+          \item \textit{Communicators}
+          \item \textit{Communication groups}
+          \item \textit{Error handlers}
+          \item Standard \textit{datatypes} for the C language
+          \item Point-to-point communication (\texttt{MPI\_Send} and \texttt{MPI\_Recv})
+            in \textbf{synchronous mode} 
+        \end{itemize}
+      \end{frame}
+
+    \subsection{Implementation}
+      \begin{frame}{Architecture}
+        \addfig[\small LWMPI Architecture][width=0.55\linewidth]{libmpi.pdf}
+
+        \begin{itemize}
+          \item \texttt{\textbf{LibMPI}}: top-level library that implements the MPI functions in a OS-independent way
+          \item \texttt{\textbf{MPUtil}}: interface between \texttt{LibMPI} and the OS-level IPC system
+          \begin{itemize}
+             \item Includes OS-dependent code 
+          \end{itemize}
+        \end{itemize}
+      \end{frame}
+
+      %
+      \begin{frame}{Nanvix Support to LWMPI}
+        \begin{itemize}
+          \item \textbf{IPC Abstractions}~\cite{Souto2020}
+          \begin{itemize}
+            \item \texttt{Mailbox}
+            \item \texttt{Portal}
+            \item \texttt{Sync}
+          \end{itemize}
+          \bigskip
+          \item \textbf{Runtime Services}
+          \begin{itemize}
+            \item Name Server
+            \item Name Client
+            \item Named IPC
+          \end{itemize}
+        \end{itemize}
+      \end{frame}
+
+      %
+      \begin{frame}{Communication protocol for synchronous communications}
+        \addfig[Communication Protocol][width=0.5\linewidth]{send-recv_protocol.pdf}
+      \end{frame}
+
+
+  \section{Evaluation}
+
+    \subsection{Methodology}
+      \begin{frame}{Evaluation Method}
+        \begin{itemize}
+          \item \textbf{Applications}: CAP Bench Suite\footnote[frame]{\scriptsize Publicly available at: https://github.com/nanvix/benchmarks}~\cite{Souza2017}
+          
+          \begin{itemize}
+            \item Exercise different \textit{parallel patterns}, \textit{task types}, \textit{comm.
+              intensities} and \textit{task loads}
+          \end{itemize}
+        \end{itemize}
+
+        \begin{table}[b]
+          \centering
+          \label{table:apps}
+          \resizebox{23em}{3em}{
+          \begin{tabular}{cccc}
+            \toprule
+            \textbf{App} & \textbf{Boundary} & \textbf{Parallel Pattern} & \textbf{Comm. Intensity} \\
+            \midrule
+            FN           & CPU-bound         & MapReduce                         & Light                      \\
+            \midrule
+            GF           & CPU/IO Bound      & Stencil                           & Average                    \\
+            \midrule
+            KM           & IO-bound          & Map                               & Heavy                      \\
+            \bottomrule
+          \end{tabular}
+          }
+        \end{table}
+
+        \begin{itemize}
+          \item \textbf{Performance evaluation}
+
+          \begin{itemize}
+            \item \textbf{Target architecture}: Kalray MPPA-256~\cite{DeDinechin2013-2}
+            \item \textbf{Baseline}: vendor-specific runtime (Kalray Runtime)
+            \item \textbf{Performance metric}: speedup
+          \end{itemize}
+        \end{itemize}
+      \end{frame}
+
+    \subsection{Experimental Platform}
+      %
+      \begin{frame}{Kalray MPPA-256}
+        \begin{itemize}
+          \item 288 cores (256 GP cores + 32 firmware cores)
+          \item 16 Compute Clusters (CCs)
+          \item 4 I/O Clusters (IOs)
+          \item 2 Network-on-Chips (C-NoC + D-NoC)
+        \end{itemize}
+
+        \addfig[][width=0.5\linewidth]{mppa256.pdf}   
+      \end{frame}
+
+      %
+      \begin{frame}{Experimental Scenarios}
+        \begin{itemize}
+          \item CAP Bench apps have a single leader that coordinates the execution, with
+            worker processes varying from 1 to 15 (max.)
+
+          \item \textbf{Problems sizes}:
+          \begin{itemize}
+            \item \textbf{FN}: numbers ranging from 1000001 to 1000129
+            \item \textbf{GF}: 512 x 512 image and 7 x 7 mask
+            \item \textbf{KM}: 30720 points and 64 centroids
+          \end{itemize}
+
+          \item \textbf{Experimental design}
+          \begin{itemize}
+            \item 30 trials for each configuration
+            \item Maximum CV < 1\%
+          \end{itemize}
+        \end{itemize}
+      \end{frame}
+
+    \subsection{Results}
+      \begin{frame}{FN}
+        \addfig[][width=0.5\linewidth]{fn-speedup.pdf}
+
+        \begin{itemize}
+          \item Communication has little interference, since the kernel is CPU-bound
+          \item LWMPI shows better scalability
+          \item Load imbalance with more than 8 workers
+        \end{itemize}
+      \end{frame}
+
+      %
+      \begin{frame}{GF}
+        \addfig[][width=0.5\linewidth]{gf-speedup.pdf}
+
+        \begin{itemize}
+          \item Small problem sizes resulted in insufficient workloads for the Kalray runtime,
+          deteriorating its performance
+          \item This problem seems to be attenuated as the parallelism increases in LWMPI,
+          proving better scalability in these situations
+          \item \textbf{Possibility of improvement:} asynchronous communications
+        \end{itemize}
+      \end{frame}
+
+      %
+      \begin{frame}{KM}
+        \addfig[][width=0.5\linewidth]{km-speedup.pdf}
+
+        \begin{itemize}
+          \item LWMPI and Kalray Runtime achieved similar speedups
+          \item LWMPI showed slightly worse scalability due to coarse grain data transfers
+          \item \textbf{Possibility of improvement:} a mechanism that dynamically chooses
+            which OS-level comm. abstraction fits better the data transfer granularity
+        \end{itemize}
+      \end{frame}
+
+
+  \section{Conclusions}
+    \begin{frame}{Conclusions}
+      \begin{itemize}
+      	\item \textbf{Our solution provides better programmability for lightweight manycores, because:}
+        \begin{itemize}
+           \item It is based on an industry-standard interface (MPI)
+           \item It leverages a POSIX-compliant OS
+           \item It is portable across different lightweight manycore architectures
+       \end{itemize}
+	
+	\vspace{0.5cm}
+
+        \item \textbf{Experimental results}
+        \begin{itemize}
+	   \item LWMPI presents similar scalability for parallel and distributed problems, when compared
+	   to the vendor-specific runtime library (Kalray Runtime)
+       \end{itemize}
+      \end{itemize}
+    \end{frame}
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Finalização
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \stopcountingframes
+
+  \referencesframe{references}
+
+  \thanksframe
+
+  \begin{backup}
+
+    % Nanvix
+    \begin{frame}{Nanvix}
+      \begin{itemize}
+        \item An Open-Source, POSIX compliant, ditributed OS that targets lightweight
+          manycores (\url{https://github.com/nanvix/})
+        \item Designed in a distributed fashion \textbf{\textit{multikernel}}
+        \begin{itemize}
+          \item Multiple instances of an assymetric \textit{microkernel}
+        \end{itemize}
+      \end{itemize}
+
+      \addfig[][width=0.6\linewidth]{multikernel.pdf}
+    \end{frame}
+
+  \end{backup}
+
+\end{document}
