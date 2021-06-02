@@ -115,7 +115,6 @@
           \item A \textbf{portable} message passing standard
           \item Maintained and defined by the \textbf{MPI-Forum}\footnote[frame]{\scriptsize MPI-Forum website: https://www.mpi-forum.org }
           \item Widespread between \textbf{industry} and \textbf{academia}
-          \item Employed in \textbf{supercomputers}
           \bigskip
           \item \textbf{De facto standard for message passing in HPC!}
         \end{itemize}
@@ -278,8 +277,9 @@
 
         \begin{itemize}
           \item Communication has little interference, since the kernel is CPU-bound
-          \item LWMPI shows better scalability
           \item Load imbalance with more than 8 workers
+          \item LWMPI shows better scalability
+          \item Easy adaptation of the kernel without significant overheads
         \end{itemize}
       \end{frame}
 
@@ -288,10 +288,9 @@
         \addfig[][width=0.5\linewidth]{gf-speedup.pdf}
 
         \begin{itemize}
-          \item Small problem sizes resulted in insufficient workloads for the Kalray runtime,
-          deteriorating its performance
-          \item This problem seems to be attenuated as the parallelism increases in LWMPI,
-          proving better scalability in these situations
+          \item Small problem sizes resulted in insufficient workloads for the Kalray runtime
+          \item Seems to be attenuated as the parallelism increases in LWMPI,
+          proving better scalability also in these situations
           \item \textbf{Possibility of improvement:} asynchronous communications
         \end{itemize}
       \end{frame}
